@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="FadeCircularView">
+        <attr name="borderSize" format="dimension"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="innerColor" format="color"/>
+        <attr name="innerMinRadius" format="dimension"/>
+        <attr name="isOpen" format="boolean"/>
+    </declare-styleable>
+</resources>
