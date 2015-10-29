@@ -1,22 +1,22 @@
-package im.yangqiang.android.ui.widget;
+package im.yangqiang.android.ui.widget.animation.sprite;
 
-import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.View;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import im.yangqiang.android.ui.R;
+import im.yangqiang.android.ui.widget.animation.AnimationView;
 
 /**
  * 自动填充和取消填充的圆
+ * Created by Carlton on 10/28/15.
  */
-public class FadeCircularView extends View
+public class FullCircularSprite extends SpriteView
 {
     /**
      * 边框的宽度
@@ -38,117 +38,74 @@ public class FadeCircularView extends View
      * 半径
      */
     private float mRawRadius    = -1;
+    /**
+     * 改变中的半径大小
+     */
     private float mChangeRadius = 0;
     /**
      * 内部圆最小半径
      */
-    private float mMinRadius    = 0;
+    private float mMinRadius    = 30;
     /**
      * 是否默认打开
      */
     private boolean isOpen;
 
-    public FadeCircularView(Context context)
+    public FullCircularSprite(AnimationView animationView)
     {
-        super(context);
-        init(null, 0);
+        super(animationView);
     }
 
-    public FadeCircularView(Context context, AttributeSet attrs)
+    @Override
+    public void init(AnimationView animationView, AttributeSet attrs, int defStyleAttr, int defStyleRes)
     {
-        super(context, attrs);
-        init(attrs, 0);
-    }
-
-    public FadeCircularView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        init(attrs, defStyle);
-    }
-
-    private void init(AttributeSet attrs, int defStyle)
-    {
-        // Load attributes
-        final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, com.android.databinding.library.baseAdapters.R.styleable.FadeCircularView, defStyle, 0);
-        mBorderSize = a.getDimension(R.styleable.FadeCircularView_borderSize, 10);
-        color = a.getColor(R.styleable.FadeCircularView_backgroundColor, Color.RED);
-        innerColor = a.getColor(R.styleable.FadeCircularView_innerColor, Color.WHITE);
-        mMinRadius = a.getDimension(R.styleable.FadeCircularView_innerMinRadius, 0);
-        isOpen = a.getBoolean(R.styleable.FadeCircularView_isOpen, false);
+        final TypedArray a = animationView.getContext().obtainStyledAttributes(attrs, R.styleable.AnimationView, defStyleAttr, 0);
+        mBorderSize = a.getDimension(R.styleable.AnimationView_borderSize, 10);
+        color = a.getColor(R.styleable.AnimationView_backgroundColor, Color.RED);
+        innerColor = a.getColor(R.styleable.AnimationView_innerColor, Color.WHITE);
+        mMinRadius = a.getDimension(R.styleable.AnimationView_innerMinRadius, 0);
+        mChangeRadius = mMinRadius;
+        isOpen = a.getBoolean(R.styleable.AnimationView_isOpen, false);
         a.recycle();
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
     }
 
     @Override
-    protected void onDraw(Canvas canvas)
+    public void onDraw(Canvas canvas)
     {
-        super.onDraw(canvas);
-
         // allocations per draw cycle.
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
+        int paddingLeft = getView().getPaddingLeft();
+        int paddingTop = getView().getPaddingTop();
+        int paddingRight = getView().getPaddingRight();
+        int paddingBottom = getView().getPaddingBottom();
 
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
+        int contentWidth = getView().getWidth() - paddingLeft - paddingRight;
+        int contentHeight = getView().getHeight() - paddingTop - paddingBottom;
         int centerX = paddingLeft + contentWidth / 2;
         int centerY = paddingTop + contentHeight / 2;
         mPaint.setColor(color);
         canvas.drawCircle(centerX, centerY, getMinWidth(contentWidth, contentHeight) / 2, mPaint);
         mPaint.setColor(innerColor);
-        canvas.drawCircle(centerX, centerY, mChangeRadius, mPaint);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int width;
-        int height;
-
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
-        if (widthMode == MeasureSpec.EXACTLY)
-        {
-            width = widthSize;
-        }
-        else
-        {
-            width = widthSize - paddingLeft - paddingRight;
-        }
-        if (heightMode == MeasureSpec.EXACTLY)
-        {
-            height = heightSize;
-        }
-        else
-        {
-            height = heightSize - paddingTop - paddingBottom;
-        }
-        int min = Math.min(width, height);
-        setMeasuredDimension(min, min);
-
-        mRawRadius = getMinWidth(contentWidth, contentHeight) / 2 - mBorderSize;
-        mChangeRadius = isOpen ? mRawRadius : 0;
+        canvas.drawCircle(centerX, centerY, Math.max(mChangeRadius, mMinRadius), mPaint);
     }
 
     private float getMinWidth(float width, float height)
     {
         return Math.min(width, height);
+    }
+
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        int paddingLeft = getView().getPaddingLeft();
+        int paddingTop = getView().getPaddingTop();
+        int paddingRight = getView().getPaddingRight();
+        int paddingBottom = getView().getPaddingBottom();
+        int contentWidth = getView().getWidth() - paddingLeft - paddingRight;
+        int contentHeight = getView().getHeight() - paddingTop - paddingBottom;
+        mRawRadius = getMinWidth(contentWidth, contentHeight) / 2 - mBorderSize;
+        mChangeRadius = isOpen ? mRawRadius : 0;
     }
 
     private boolean isAnimationFinish = true;
@@ -178,7 +135,7 @@ public class FadeCircularView extends View
                     isAnimationFinish = true;
                 }
                 mChangeRadius -= 0.5;
-                postInvalidate();
+                getView().postInvalidate();
             }
         }, 0, 2);
     }
@@ -197,7 +154,7 @@ public class FadeCircularView extends View
                     close();
                 }
                 mChangeRadius += 0.5;
-                postInvalidate();
+                getView().postInvalidate();
             }
         });
     }
@@ -227,7 +184,7 @@ public class FadeCircularView extends View
                     isAnimationFinish = true;
                 }
                 mChangeRadius += 0.5;
-                postInvalidate();
+                getView().postInvalidate();
             }
         });
     }

@@ -1,9 +1,12 @@
 <resources>
-    <declare-styleable name="FadeCircularView">
+    <declare-styleable name="AnimationView">
         <attr name="borderSize" format="dimension"/>
         <attr name="backgroundColor" format="color"/>
         <attr name="innerColor" format="color"/>
+        <attr name="innerSize" format="dimension"/>
         <attr name="innerMinRadius" format="dimension"/>
         <attr name="isOpen" format="boolean"/>
+        <attr name="startAngle" format="float"/>
+        <attr name="endAngle" format="float"/>
     </declare-styleable>
 </resources>
