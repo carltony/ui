@@ -96,6 +96,9 @@ public class ProgressCircularSprite extends SpriteView
 
     private boolean isAnimationFinish = true;
 
+    /**
+     * 开始动画
+     */
     public void start()
     {
         if (!isAnimationFinish)
