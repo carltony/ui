@@ -50,6 +50,14 @@ public class FullCircularSprite extends SpriteView
      * 是否默认打开
      */
     private boolean isOpen;
+    /**
+     * 打开时间周期，不是一个具体的秒
+     */
+    private long startPeriod = 2;
+    /**
+     * 关闭动画的周期，不是一个具体的秒
+     */
+    private long endPeriod   = 2;
 
     public FullCircularSprite(AnimationView animationView)
     {
@@ -84,8 +92,11 @@ public class FullCircularSprite extends SpriteView
         int contentHeight = getView().getHeight() - paddingTop - paddingBottom;
         int centerX = paddingLeft + contentWidth / 2;
         int centerY = paddingTop + contentHeight / 2;
-        mPaint.setColor(color);
-        canvas.drawCircle(centerX, centerY, getMinWidth(contentWidth, contentHeight) / 2, mPaint);
+        if (color != 0)
+        {
+            mPaint.setColor(color);
+            canvas.drawCircle(centerX, centerY, getMinWidth(contentWidth, contentHeight) / 2, mPaint);
+        }
         mPaint.setColor(innerColor);
         canvas.drawCircle(centerX, centerY, Math.max(mChangeRadius, mMinRadius), mPaint);
     }
@@ -137,7 +148,7 @@ public class FullCircularSprite extends SpriteView
                 mChangeRadius -= 0.5;
                 getView().postInvalidate();
             }
-        }, 0, 2);
+        }, 0, endPeriod);
     }
 
     public void toggleOpen()
@@ -168,7 +179,7 @@ public class FullCircularSprite extends SpriteView
         isOpen = true;
         isAnimationFinish = false;
         Timer timer = new Timer();
-        timer.schedule(timerTask, 0, 2);
+        timer.schedule(timerTask, 0, startPeriod);
     }
 
     public void open()
@@ -219,5 +230,15 @@ public class FullCircularSprite extends SpriteView
     public void setColor(int color)
     {
         this.color = color;
+    }
+
+    public void setStartPeriod(long startPeriod)
+    {
+        this.startPeriod = startPeriod;
+    }
+
+    public void setEndPeriod(long endPeriod)
+    {
+        this.endPeriod = endPeriod;
     }
 }

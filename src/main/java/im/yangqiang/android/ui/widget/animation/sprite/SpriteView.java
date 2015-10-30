@@ -1,6 +1,10 @@
 package im.yangqiang.android.ui.widget.animation.sprite;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 
 import im.yangqiang.android.ui.widget.animation.AnimationView;
@@ -23,7 +27,14 @@ public abstract class SpriteView
     {
         return mAnimationView;
     }
-
+//    protected void clearCanvas(Canvas canvas)
+//    {
+//        Paint paint = new Paint();
+//        paint.setColor(Color.TRANSPARENT);
+//        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+//        canvas.drawPaint(paint);
+//        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+//    }
     public abstract void init(AnimationView animationView, AttributeSet attrs, int defStyleAttr, int defStyleRes);
 
     public abstract void onDraw(Canvas canvas);

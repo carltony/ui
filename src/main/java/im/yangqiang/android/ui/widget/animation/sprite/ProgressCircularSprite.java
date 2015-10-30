@@ -51,6 +51,10 @@ public class ProgressCircularSprite extends SpriteView
      * 内部圆最小半径
      */
     private float mMinRadius   = 30;
+    /**
+     * 时间周期
+     */
+    private long  startPeriod  = 2;
 
     public ProgressCircularSprite(AnimationView animationView)
     {
@@ -113,7 +117,7 @@ public class ProgressCircularSprite extends SpriteView
                 mChangeAngle += 0.5;
                 getView().postInvalidate();
             }
-        }, 0, 2);
+        }, 0, startPeriod);
     }
 
     public void finish()
@@ -127,5 +131,20 @@ public class ProgressCircularSprite extends SpriteView
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
 
+    }
+
+    public void setColor(int color)
+    {
+        this.color = color;
+    }
+
+    public void setInnerColor(int innerColor)
+    {
+        this.innerColor = innerColor;
+    }
+
+    public void setStartPeriod(long startPeriod)
+    {
+        this.startPeriod = startPeriod;
     }
 }
